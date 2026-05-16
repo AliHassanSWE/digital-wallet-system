@@ -1,0 +1,8 @@
+# Ignore compiled executables (the programs built by your compiler)
+*.exe
+
+# Ignore all storage data files so your personal test accounts don't upload
+*.txt
+
+# Optional: Ignore VS Code configuration files
+.vscode/
