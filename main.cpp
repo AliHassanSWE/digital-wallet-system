@@ -106,11 +106,36 @@ bool loginUser() {
     return false;
 }
 
+void showSplashScreen() {
+    cout << "\n\t" << string(62, '=') << endl;
+    cout << "\t||                                                          ||" << endl;
+    cout << "\t||             MULTI-USER DIGITAL WALLET SYSTEM             ||" << endl;
+    cout << "\t||                                                          ||" << endl;
+    cout << "\t" << string(62, '=') << endl;
+    cout << "\t  DEVELOPED BY (PROJECT MEMBERS):" << endl;
+    cout << "\t  ------------------------------" << endl;
+    cout << "\t  1. Ali Hassan           |  Roll No: 25021519-119" << endl;
+    cout << "\t  2. M. Shafay Nadeem     |  Roll No: 25021519-070" << endl;
+    cout << "\t  3. M. Musa              |  Roll No: 25021519-111" << endl;
+    cout << "\t  ------------------------------" << endl;
+    cout << "\t  SECTION:       BSCS-(A)" << endl;
+    cout << "\t  SUBMITTED TO:  Mam Ayesha Rashid" << endl;
+    cout << "\t" << string(62, '=') << endl;
+    cout << "\n\t  Press ENTER to start  the application...";
+    
+    cin.get(); // Pauses screen for your instructor to read it
+    
+    #ifdef _WIN32
+        system("cls");   // Clears terminal on Windows
+    #else
+        system("cl ear"); // Clears terminal on Linux/Mac
+    #endif
+}
 int main() {
     // Load Data on startup
     users = FileManager::loadUsers();
     wallets = FileManager::loadWallets();
-
+showSplashScreen();
     int choice;
     while (true) {
         if (loggedInUser == nullptr) {
