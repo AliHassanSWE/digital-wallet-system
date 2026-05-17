@@ -222,8 +222,8 @@ showSplashScreen();
                     }
                 }
                 
-    } else if (choice == 4) { 
-        
+ } else if (choice == 4) { 
+
         cout << "\n================= TRANSACTION HISTORY =================" << endl;
         cout << left << setw(15) << "Date" 
              << setw(12) << "Type" 
@@ -236,19 +236,35 @@ showSplashScreen();
         double amt;
 
         bool found = false;
+        
+        // This will now match your file format flawlessly
         while (file >> tID >> tType >> amt >> sID >> rID >> d) {
             if (sID == activeWallet->getUserID() || rID == activeWallet->getUserID()) {
-                Transaction temp(tID, tType, amt, sID, rID, d);
-                temp.displayTransaction();
+                
+                // Print the raw fields cleanly into alignment columns
+                cout << left << setw(15) << d 
+                     << setw(12) << tType 
+                     << setw(10) << amt;
+                     
+                if (tType == "Transfer") {
+                    cout << sID << " to " << rID;
+                } else {
+                    cout << "Self Action";
+                }
+                cout << " | ID: " << tID << endl;
+                
                 found = true;
             }
         }
-        if (!found) cout << "No transactions found." << endl;
+        
+        if (!found) {
+            cout << "No transactions found." << endl;
+        }
         file.close();
         
         cout << "\nPress Enter to continue...";
-        cin.ignore(); cin.get();
-
+        cin.ignore(); 
+        cin.get();
     } else if (choice == 5) { 
         loggedInUser = nullptr;
         activeWallet = nullptr;

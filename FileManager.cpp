@@ -58,16 +58,11 @@ vector<Wallet> FileManager::loadWallets()
 }
 
 // Append a single transaction
-void FileManager::logTransaction(string tID, string type, double amount, string sender, string receiver, string date)
-{
+void FileManager::logTransaction(string tID, string tType, double amount, string sender, string receiver, string date) {
     ofstream file("transactions.txt", ios::app);
-    if (file.is_open())
-    {
-        file << "Date: " << setw(12) << date
-             << " | " << setw(10) << sender
-             << " transferred Rs." << setw(8) << amount
-             << " to " << receiver
-             << " | ID: " << tID << endl;
+    if (file.is_open()) {
+        
+        file << tID << " " << tType << " " << amount << " " << sender << " " << receiver << " " << date << endl;
         file.close();
     }
 }
