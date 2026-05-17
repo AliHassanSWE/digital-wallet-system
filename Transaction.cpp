@@ -1,9 +1,11 @@
-#include "Transaction.h"
 #include <iostream>
-using namespace std;
 #include <string>
+#include "Transaction.h"
 
-Transaction::Transaction(string tID, string tType, double amt, string sID, string rID, string d) {
+using namespace std;
+
+Transaction::Transaction(string tID, string tType, double amt, string sID, string rID, string d)
+{
     transactionID = tID;
     type = tType;
     amount = amt;
@@ -12,11 +14,13 @@ Transaction::Transaction(string tID, string tType, double amt, string sID, strin
     date = d;
 }
 
-void Transaction::displayTransaction() const {
-    cout << "[" << date << "] " << type << " | Rs. " << amount 
+void Transaction::displayTransaction() const
+{
+    cout << "[" << date << "] " << type << " | Rs. " << amount
          << " | Sender: " << senderID << " | Receiver: " << receiverID << "\n";
 }
 
-string Transaction::toFileString() const {
+string Transaction::toFileString() const
+{
     return transactionID + " " + type + " " + to_string(amount) + " " + senderID + " " + receiverID + " " + date;
 }

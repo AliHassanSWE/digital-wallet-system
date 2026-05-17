@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-class Wallet {
+class Wallet
+{
 private:
     string walletID;
     string userID;
@@ -16,12 +17,12 @@ public:
     // Getters
     string getWalletID() const;
     string getUserID() const;
-    double getBalance() const; // [cite: 66, 67]
+    double getBalance() const;
 
     // Core Functions
-    void deposit(double amount); // [cite: 61]
-    bool withdraw(double amount); // [cite: 63, 64]
-    
+    void deposit(double amount);
+    bool withdraw(double amount);
+
     // File formatting helper
     string toFileString() const;
 };

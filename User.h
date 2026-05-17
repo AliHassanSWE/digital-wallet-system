@@ -20,12 +20,12 @@ public:
     string getPin() const;
 
     // Functions
-    void displayUser() const; // [cite: 81]
+    void displayUser() const; 
     string toFileString() const;
     static bool isValidPin(const string& inputPin) {
         if (inputPin.length() != 5) return false;
         for (char c : inputPin) {
-            if (!isdigit(c)) return false; // Rejects letters, symbols, or spaces
+            if (!isdigit(c)) return false; 
         }
         return true;
     }

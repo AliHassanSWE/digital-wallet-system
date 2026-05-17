@@ -1,9 +1,12 @@
 #include "User.h"
 #include <iostream>
 
+using namespace std;
+
 User::User() {}
 
-User::User(string id, string n, string e, string p) {
+User::User(string id, string n, string e, string p)
+{
     userID = id;
     name = n;
     email = e;
@@ -14,10 +17,12 @@ string User::getUserID() const { return userID; }
 string User::getName() const { return name; }
 string User::getPin() const { return pin; }
 
-void User::displayUser() const {
+void User::displayUser() const
+{
     cout << "User ID: " << userID << " | Name: " << name << " | Email: " << email << endl;
 }
 
-string User::toFileString() const {
-    return userID + " " + name + " " + email + " " + pin; // [cite: 118, 119]
+string User::toFileString() const
+{
+    return userID + " " + name + " " + email + " " + pin;
 }

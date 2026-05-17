@@ -31,18 +31,18 @@ void drawLine() {
     cout << "====================================================\n";
 }
 
-void showMainMenu() { // [cite: 129]
+void showMainMenu() { 
     drawLine();
     cout << "          MULTI-USER DIGITAL WALLET SYSTEM          \n";
     drawLine();
-    cout << "  1. Register\n"; // [cite: 130]
-    cout << "  2. Login\n"; // [cite: 131]
-    cout << "  3. Exit\n"; // [cite: 132]
+    cout << "  1. Register\n"; 
+    cout << "  2. Login\n"; 
+    cout << "  3. Exit\n"; 
     drawLine();
     cout << "Choose an option: ";
 }
 
-void showUserMenu() { // [cite: 133]
+void showUserMenu() { 
     drawLine();
     cout << "          WELCOME, " << loggedInUser->getName() << "!\n";
     cout << "          Balance: Rs. " << activeWallet->getBalance() << "\n";
@@ -50,7 +50,7 @@ void showUserMenu() { // [cite: 133]
    cout << "1. Deposit Money" << endl;
 cout << "2. Withdraw Money" << endl;
 cout << "3. Transfer Money" << endl;
-cout << "4. View Transaction History" << endl; // New Option
+cout << "4. View Transaction History" << endl; 
 cout << "5. Logout" << endl;
     drawLine();
     cout << "Choose an option: ";
@@ -78,7 +78,7 @@ void registerUser() {
     string id = "U" + to_string(users.size() + 100);
 
     users.push_back(User(id, name, email, inputPin));
-    wallets.push_back(Wallet("W" + id, id, 0.0)); // Auto create wallet
+    wallets.push_back(Wallet("W" + id, id, 0.0)); 
 
     FileManager::saveUsers(users);
     FileManager::saveWallets(wallets);
@@ -161,7 +161,7 @@ void showSplashScreen() {
     cout << "\t" << string(62, '=') << endl;
     cout << "\n\t  Press ENTER to start  the application...";
     
-    cin.get(); // Pauses screen for your instructor to read it
+    cin.get();
     
     #ifdef _WIN32
         system("cls");   // Clears terminal on Windows
@@ -193,7 +193,7 @@ showSplashScreen();
                 cout << "Enter amount to deposit: ";
                 cin >> amt;
                 activeWallet->deposit(amt);
-                FileManager::saveWallets(wallets); // Save instantly
+                FileManager::saveWallets(wallets); 
             } else if (choice == 2) {
                 double amt;
                 cout << "Enter amount to withdraw: ";
@@ -221,9 +221,9 @@ showSplashScreen();
                         cout << "Transfer Successful!\n";
                     }
                 }
-                // Change this section (Starting around Line 159)
+                
     } else if (choice == 4) { 
-        // --- NEW HISTORY LOGIC ---
+        
         cout << "\n================= TRANSACTION HISTORY =================" << endl;
         cout << left << setw(15) << "Date" 
              << setw(12) << "Type" 
@@ -249,7 +249,7 @@ showSplashScreen();
         cout << "\nPress Enter to continue...";
         cin.ignore(); cin.get();
 
-    } else if (choice == 5) { // Shift Logout to Choice 5
+    } else if (choice == 5) { 
         loggedInUser = nullptr;
         activeWallet = nullptr;
         cout << "Logged out successfully.\n";

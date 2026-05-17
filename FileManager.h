@@ -6,13 +6,14 @@
 
 using namespace std;
 
-class FileManager {
+class FileManager
+{
 public:
-    // Save functions [cite: 106, 108]
-    static void saveUsers(const vector<User>& users);
-    static void saveWallets(const vector<Wallet>& wallets);
-static void logTransaction(string tID, string type, double amount, string sender, string receiver, string date);
-    // Load functions [cite: 107, 109]
+    // Save functions
+    static void saveUsers(const vector<User> &users);
+    static void saveWallets(const vector<Wallet> &wallets);
+    static void logTransaction(string tID, string type, double amount, string sender, string receiver, string date);
+    // Load functions
     static vector<User> loadUsers();
     static vector<Wallet> loadWallets();
 };

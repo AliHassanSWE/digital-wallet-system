@@ -3,20 +3,23 @@
 
 #include <string>
 
-class Transaction {
+using namespace std;
+
+class Transaction
+{
 private:
-    std::string transactionID;
-    std::string type;
+    string transactionID;
+    string type;
     double amount;
-    std::string senderID;
-    std::string receiverID;
-    std::string date;
+    string senderID;
+    string receiverID;
+    string date;
 
 public:
-    Transaction(std::string tID, std::string tType, double amt, 
-                std::string sID, std::string rID, std::string d);
+    Transaction(string tID, string tType, double amt,
+                string sID, string rID, string d);
     void displayTransaction() const;
-    std::string toFileString() const;
+    string toFileString() const;
 };
 
 #endif
