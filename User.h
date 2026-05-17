@@ -7,7 +7,7 @@ private:
     string userID;
     string name;
     string email;
-    string password;
+    string pin;
 
 public:
     // Constructors
@@ -17,9 +17,16 @@ public:
     // Getters
     string getUserID() const;
     string getName() const;
-    string getPassword() const;
+    string getPin() const;
 
     // Functions
     void displayUser() const; // [cite: 81]
     string toFileString() const;
+    static bool isValidPin(const string& inputPin) {
+        if (inputPin.length() != 5) return false;
+        for (char c : inputPin) {
+            if (!isdigit(c)) return false; // Rejects letters, symbols, or spaces
+        }
+        return true;
+    }
 };

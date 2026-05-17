@@ -15,6 +15,7 @@ vector<User> users;
 vector<Wallet> wallets;
 User* loggedInUser = nullptr;
 Wallet* activeWallet = nullptr;
+int failedAttempts = 0; // Tracks consecutive wrong PIN entries globally
 
 // Helper to find wallet by userID
 Wallet* findWallet(string uID) {
@@ -56,54 +57,91 @@ cout << "5. Logout" << endl;
 }
 
 void registerUser() {
-    string name, email, pass; // Notice we don't ask for 'id' here anymore
+    string name, email, inputPin; 
 
     cout << "Enter Name (No spaces): ";
     cin >> name;
     cout << "Enter Email: ";
     cin >> email;
-    cout << "Enter Password: ";
-    cin >> pass;
+    
+    // Loop keeps running until a valid 5-digit numeric PIN is entered
+    while (true) {
+        cout << "Set 5-Digit Wallet PIN: ";
+        cin >> inputPin;
+        if (User::isValidPin(inputPin)) {
+            break;
+        }
+        cout << "[!] Error: PIN must be exactly 5 numeric digits (e.g., 12345).\n" << endl;
+    }
 
-    // --- AUTO ID GENERATION ---
-    // If there are 0 users, size is 0. 0 + 100 = 100. So the ID becomes "U100".
-    // Next user will be "U101", then "U102", etc.
+    // AUTO ID GENERATION
     string id = "U" + to_string(users.size() + 100);
 
-    users.push_back(User(id, name, email, pass));
+    users.push_back(User(id, name, email, inputPin));
     wallets.push_back(Wallet("W" + id, id, 0.0)); // Auto create wallet
 
     FileManager::saveUsers(users);
     FileManager::saveWallets(wallets);
-    
-    // Tell the user what their new auto-generated ID is!
+
     cout << "\nRegistration Successful! Your new User ID is: " << id << "\n";
-  
-    users.push_back(User(id, name, email, pass));
-    wallets.push_back(Wallet("W" + id, id, 0.0)); // Auto create wallet [cite: 29]
-    
-    FileManager::saveUsers(users);
-    FileManager::saveWallets(wallets);
-    cout << "\nRegistration Successful! Wallet Created.\n";
 }
 
 bool loginUser() {
-    string id, pass;
-    cout << "Enter User ID: ";
-    cin >> id;
-    cout << "Enter Password: ";
-    cin >> pass;
+    string id, inputPin;
 
-    for (int i = 0; i < users.size(); i++) {
-        if (users[i].getUserID() == id && users[i].getPassword() == pass) {
-            loggedInUser = &users[i];
-            activeWallet = findWallet(id);
-            cout << "\nLogin Successful!\n";
-            return true;
+    while (true) {
+        // 1. Check if the system is already locked
+        if (failedAttempts >= 10) {
+            cout << "\n==================================================" << endl;
+            cout << "[!!!] SECURITY ALERT: SYSTEM LOCKED!" << endl;
+            cout << "10 Incorrect PIN attempts reached." << endl;
+            cout << "==================================================" << endl;
+            return false;
         }
+
+        cout << "\n------------------ LOGIN PORTAL ------------------" << endl;
+        cout << "Enter User ID (or type 'exit'): ";
+        cin >> id;
+
+        // 2. Simple 'exit' check to go back to the main menu
+        if (id == "exit" || id == "EXIT") {
+            cout << "Returning to Main Menu...\n";
+            return false;
+        }
+
+        cout << "Enter 5-Digit PIN: ";
+        cin >> inputPin;
+
+        // 3. Search through registered users
+        bool matchFound = false;
+        for (size_t i = 0; i < users.size(); i++) {
+            if (users[i].getUserID() == id && users[i].getPin() == inputPin) {
+                loggedInUser = &users[i];
+                activeWallet = findWallet(id);
+                
+                cout << "\n==================================================" << endl;
+                cout << "  LOGIN SUCCESSFUL! WELCOME " << loggedInUser->getName() << endl;
+                cout << "==================================================\n";
+                
+                failedAttempts = 0; // Reset count on success
+                return true;        // Exit function completely
+            }
+        }
+
+        // 4. If the loop finishes without returning, the login failed
+        failedAttempts++;
+        cout << "\n[!] ERROR: Invalid Credentials!" << endl; 
+        cout << "Attempts Remaining: " << (10 - failedAttempts) << endl;
+        
+        if (failedAttempts >= 10) {
+            cout << "\n==================================================" << endl;
+            cout << "[!!!] MAXIMUM ATTEMPTS EXCEEDED. SYSTEM LOCKED." << endl;
+            cout << "==================================================\n";
+            return false;
+        }
+        
+        cout << "--------------------------------------------------\n";
     }
-    cout << "\nError: Invalid login credentials!\n"; // [cite: 140, 141]
-    return false;
 }
 
 void showSplashScreen() {
