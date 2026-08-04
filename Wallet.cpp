@@ -34,6 +34,7 @@ bool Wallet::withdraw(double amount) {
     return false;
 }
 
-string Wallet::toFileString() const {
-    return walletID + " " + userID + " " + to_string(balance); 
+string Wallet::toFileString() const
+{
+    return walletID + "," + userID + "," + to_string(balance);
 }

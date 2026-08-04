@@ -24,5 +24,5 @@ void User::displayUser() const
 
 string User::toFileString() const
 {
-    return userID + " " + name + " " + email + " " + pin;
+    return userID + "," + name + "," + email + "," + pin;
 }

@@ -22,5 +22,5 @@ void Transaction::displayTransaction() const
 
 string Transaction::toFileString() const
 {
-    return transactionID + " " + type + " " + to_string(amount) + " " + senderID + " " + receiverID + " " + date;
+    return transactionID + "," + type + "," + to_string(amount) + "," + senderID + "," + receiverID + "," + date;
 }
