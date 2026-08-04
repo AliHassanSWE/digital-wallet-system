@@ -7,6 +7,11 @@
 #include <iomanip>
 #include <fstream>
 #include "Transaction.h"
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 using namespace std;
 
@@ -28,7 +33,7 @@ Wallet* findWallet(string uID) {
 }
 
 void drawLine() {
-    cout << "====================================================\n";
+    cout << string(54, '=') << endl;
 }
 
 void showMainMenu() { 
@@ -37,7 +42,8 @@ void showMainMenu() {
     drawLine();
     cout << "  1. Register\n"; 
     cout << "  2. Login\n"; 
-    cout << "  3. Exit\n"; 
+    cout << "  3. Forgot Password\n"; // <-- Inserted this
+    cout << "  4. Exit\n";            // <-- Changed from 3 to 4
     drawLine();
     cout << "Choose an option: ";
 }
@@ -143,30 +149,145 @@ bool loginUser() {
         cout << "--------------------------------------------------\n";
     }
 }
+void FileManager::forgetPassword() {
+    string searchUser, securityEmail, newPin;
+    string fileUID, fileName, fileEmail, filePin;
+    bool userFound = false;
+
+    cout << "\n=========================================\n";
+    cout << "             FORGOT PASSWORD             \n";
+    cout << "=========================================\n";
+    cout << "Enter your User ID: ";
+    cin >> searchUser;
+
+    ifstream infile("users.txt");
+    ofstream tempfile("temp.txt");
+
+    if (!infile) {
+        cout << "Error: Could not open user database.\n";
+        return;
+    }
+
+    // Reading file based on your User attributes: ID, Name, Email, Pin
+    while (infile >> fileUID >> fileName >> fileEmail >> filePin) {
+        if (fileUID == searchUser) {
+            userFound = true;
+            
+            cout << "Verification: Enter your registered email address: ";
+            cin >> securityEmail;
+
+            if (securityEmail == fileEmail) {
+                cout << "Identity verified successfully!\n";
+                
+                // Loops until user enters a valid 5-digit numeric pin matching your User.h logic
+                while (true) {
+                    cout << "Enter your new 5-digit PIN: ";
+                    cin >> newPin;
+                    if (User::isValidPin(newPin)) {
+                        break;
+                    }
+                    cout << "Invalid PIN! Must be exactly 5 digits.\n";
+                }
+                
+                filePin = newPin; 
+                cout << "Password (PIN) updated successfully!\n";
+            } else {
+                cout << "Incorrect email. Access denied.\n";
+            }
+        }
+        tempfile << fileUID << " " << fileName << " " << fileEmail << " " << filePin << "\n";
+    }
+
+    infile.close();
+    tempfile.close();
+
+    if (userFound) {
+        remove("users.txt");
+        rename("temp.txt", "users.txt");
+    } else {
+        remove("temp.txt"); 
+        cout << "User ID not found in the system.\n";
+    }
+}
+// Helper function to create a typing animation effect
+// Helper function to create a typing animation effect
+void typeText(const string& text, int delayMs = 15) {
+    for (char c : text) {
+        cout << c << flush;
+        
+        // Native delay handling to avoid compiler threading errors
+        #ifdef _WIN32
+            Sleep(delayMs); // Windows native sleep function
+        #else
+            usleep(delayMs * 1000); // Mac/Linux native sleep function
+        #endif
+    }
+    cout << "\n";
+}
 
 void showSplashScreen() {
-    cout << "\n\t" << string(62, '=') << endl;
-    cout << "\t||                                                          ||" << endl;
-    cout << "\t||             MULTI-USER DIGITAL WALLET SYSTEM             ||" << endl;
-    cout << "\t||                                                          ||" << endl;
-    cout << "\t" << string(62, '=') << endl;
-    cout << "\t  DEVELOPED BY (PROJECT MEMBERS):" << endl;
-    cout << "\t  ------------------------------" << endl;
-    cout << "\t  1. Ali Hassan           |  Roll No: 25021519-119" << endl;
-    cout << "\t  2. M. Shafay Nadeem     |  Roll No: 25021519-070" << endl;
-    cout << "\t  3. M. Musa              |  Roll No: 25021519-111" << endl;
-    cout << "\t  ------------------------------" << endl;
-    cout << "\t  SECTION:       BSCS-(A)" << endl;
-    cout << "\t  SUBMITTED TO:  Mam Ayesha Rashid" << endl;
-    cout << "\t" << string(62, '=') << endl;
-    cout << "\n\t  Press ENTER to start  the application...";
-    
-    cin.get();
-    
+    // ANSI Color Codes for terminal styling
+    const string RESET   = "\033[0m";
+    const string BOLD    = "\033[1m";
+    const string CYAN    = "\033[96m";
+    const string GREEN   = "\033[92m";
+    const string YELLOW  = "\033[93m";
+    const string MAGENTA = "\033[95m";
+
+    // Clear the screen before starting
     #ifdef _WIN32
-        system("cls");   // Clears terminal on Windows
+        system("cls");
     #else
-        system("cl ear"); // Clears terminal on Linux/Mac
+        system("clear");
+    #endif
+
+    // Top Header Banner (Instant print, no delay)
+    cout << CYAN << BOLD;
+    cout << "\n\t" << string(70, 'x') << "\n";
+    cout << "\t||" << string(66, ' ') << "||\n";
+    cout << "\t||             MULTI-USER DIGITAL WALLET SYSTEM               ||\n";
+    cout << "\t||" << string(66, ' ') << "||\n";
+    cout << "\t" << string(70, 'x') << "\n\n" << RESET;
+
+    // Animated Project Team Section
+    typeText("\t" + string(70, '-'), 5);
+    typeText("\t                          PROJECT TEAM", 20);
+    typeText("\t" + string(70, '-') + "\n", 5);
+
+    // Group Leader Designation (Highlighted in Green)
+    cout << BOLD << GREEN;
+    typeText("\t  [GROUP LEADER]", 30);
+    cout << RESET;
+    typeText("\t  > Ali Hassan                | Roll No: 25021519-119\n", 15);
+
+    // Team Members Designation (Highlighted in Yellow)
+    cout << BOLD << YELLOW;
+    typeText("\t  [TEAM MEMBERS]", 30);
+    cout << RESET;
+    typeText("\t  > M. Shafay Nadeem          | Roll No: 25021519-070", 15);
+    typeText("\t  > M. Musa                   | Roll No: 25021519-111\n", 15);
+
+    // Academic Details (Highlighted in Magenta)
+    cout << MAGENTA;
+    typeText("\t" + string(70, '-'), 5);
+    typeText("\t  COURSE       : Object-Oriented Programming", 15);
+    typeText("\t  SECTION      : BSCS-(A)", 15);
+    typeText("\t  SUBMITTED TO : Mam Ayesha Rashid", 15);
+    typeText("\t" + string(70, '-') + "\n", 5);
+    cout << RESET;
+
+    // Blinking or highlighted prompt for User Input
+    cout << CYAN << BOLD;
+    cout << "\t  [Press ENTER to initialize secure environment...] " << RESET;
+
+    // Wait for the user to press Enter
+    cin.get();
+
+    // Clear terminal again before loading the main menu
+    #ifdef _WIN32
+        system("cls");   
+    #else
+        system("clear"); 
     #endif
 }
 int main() {
@@ -175,17 +296,23 @@ int main() {
     wallets = FileManager::loadWallets();
 showSplashScreen();
     int choice;
-    while (true) {
-        if (loggedInUser == nullptr) {
+    while (true) {if (loggedInUser == nullptr) {
             showMainMenu();
             cin >> choice;
-            if (choice == 1) registerUser();
-            else if (choice == 2) loginUser();
-            else if (choice == 3) {
+            if (choice == 1) {
+                registerUser();
+            } else if (choice == 2) {
+                loginUser();
+            } else if (choice == 3) {
+                FileManager::forgetPassword(); // <-- Triggers our new function
+            } else if (choice == 4) {
                 cout << "Exiting system. Goodbye!\n";
-                break;
+                break;                         // <-- Breaks out of the application loop safely
+            } else {
+                cout << "Invalid option! Please try again.\n";
             }
-        } else {
+        }
+       else {
             showUserMenu();
             cin >> choice;
             if (choice == 1) {
