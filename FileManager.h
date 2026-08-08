@@ -13,6 +13,7 @@ public:
     static void saveUsers(const vector<User> &users);
     static void saveWallets(const vector<Wallet> &wallets);
     static void logTransaction(string tID, string type, double amount, string sender, string receiver, string date);
+    static void generateStatement(string loggedInUserID, string loggedInUserName);
     
     // Load functions
     static void forgetPassword();

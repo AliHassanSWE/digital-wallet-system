@@ -57,7 +57,8 @@ void showUserMenu() {
 cout << "2. Withdraw Money" << endl;
 cout << "3. Transfer Money" << endl;
 cout << "4. View Transaction History" << endl; 
-cout << "5. Logout" << endl;
+cout << "5. Export Bank Statement" << endl;
+cout << "6. Logout" << endl;
     drawLine();
     cout << "Choose an option: ";
 }
@@ -219,7 +220,7 @@ void typeText(const string& text, int delayMs = 15) {
         #ifdef _WIN32
             Sleep(delayMs); // Windows native sleep function
         #else
-            usleep(delayMs * 1000); // Mac/Linux native sleep function
+            usleep(delayMs * 1000); // Mac/Linux native sleep function  
         #endif
     }
     cout << "\n";
@@ -284,20 +285,22 @@ void showSplashScreen() {
     cin.get();
 
     // Clear terminal again before loading the main menu
-    #ifdef _WIN32
-        system("cls");   
-    #else
-        system("clear"); 
-    #endif
+ #ifdef _WIN32
+    system("cls");
+#else
+
+    system("clear");
+#endif
 }
+
 int main() {
     // Load Data on startup
     users = FileManager::loadUsers();
     wallets = FileManager::loadWallets();
 showSplashScreen();
     int choice;
-    while (true) {if (loggedInUser == nullptr) {
-            showMainMenu();
+while (true) {
+            if (loggedInUser == nullptr) {            showMainMenu();
             cin >> choice;
             if (choice == 1) {
                 registerUser();
@@ -392,14 +395,22 @@ showSplashScreen();
         cout << "\nPress Enter to continue...";
         cin.ignore(); 
         cin.get();
-    } else if (choice == 5) { 
-        loggedInUser = nullptr;
-        activeWallet = nullptr;
-        cout << "Logged out successfully.\n";
-    }
-          
+  } else if (choice == 5) {
+            // Trigger the receipt generation using the global pointers
+            cout << "\n\tGenerating official statement...\n";
+            FileManager::generateStatement(loggedInUser->getUserID(), loggedInUser->getName());
+            
+   } else if (choice == 6) {
+            // Updated Logout logic
+            cout << "\nLogging out... Goodbye, " << loggedInUser->getName() << "!\n";
+            loggedInUser = nullptr;
+            activeWallet = nullptr;
+            break; // Breaks out of the logged-in loop to return to main menu
+        } else {
+            cout << "Invalid option! Please try again.\n";
         }
     }
-    return 0;
+    } 
+return 0; 
 }
 // g++ main.cpp Transaction.cpp User.cpp Wallet.cpp FileManager.cpp -o WalletSystem; .\WalletSystem.exe
